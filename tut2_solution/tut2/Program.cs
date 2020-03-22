@@ -6,8 +6,7 @@ namespace tut2
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            dsadsad
+            Console.WriteLine("Ini");
         }
     }
 }
