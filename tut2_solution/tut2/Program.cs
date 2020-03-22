@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using tut2.Models;
 
@@ -10,10 +11,34 @@ namespace tut2
     {
         public static void Main(string[] args)
         {
-            var pathToFile = @"Data/data.csv";
+            string[] arguments = { "Data/data.csv", "result.xml" , "xml" };
+            arguments[0] = "Data/data.csv";
+            string pathToCsvGiven = @arguments[0];
+
+            arguments[1] = "result.xml";
+            string pathDestinationGiven = @arguments[1];
+
+            arguments[2] = "xml";
+            var dataFormatGiven = arguments[2];
+
+
+            if (!File.Exists(pathToCsvGiven))
+            {
+                Console.WriteLine("File does not exist.");
+                System.Environment.Exit(1);
+            }
+
+            Regex regex = new Regex(@"((?:[a-zA-Z]\\:){0,1}(?:[\\/][\\w.]+){1,})");
+            if (regex.IsMatch(pathDestinationGiven))
+            {
+                Console.WriteLine("Sth wrong with destitanion to result");
+                System.Environment.Exit(1);
+            }
 
             //Reading from file
-            var fileInfo = new FileInfo(pathToFile);
+            var fileInfo = new FileInfo(pathToCsvGiven);
+            
+
             using (var streamReader = new StreamReader(fileInfo.OpenRead()))
             {
                 string line = null;
@@ -24,6 +49,7 @@ namespace tut2
                 }
             }
 
+    
             var listOfStudents = new HashSet<Student>(new CustomComparer());
             var student = new Student
             {
@@ -42,6 +68,10 @@ namespace tut2
             };
 
             listOfStudents.Add(student);
+            if (!listOfStudents.Add(student2))
+            {
+                Console.WriteLine("I found duplicate!" + student2);
+            }
             listOfStudents.Add(student2);
 
             FileStream writer = new FileStream(@"result.xml", FileMode.Create);
