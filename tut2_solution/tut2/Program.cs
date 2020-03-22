@@ -12,6 +12,7 @@ namespace tut2
         public static void Main(string[] args)
         {
             string[] arguments = { "Data/data.csv", "result.xml" , "xml" };
+           
             arguments[0] = "Data/data.csv";
             string pathToCsvGiven = @arguments[0];
 
@@ -21,6 +22,7 @@ namespace tut2
             arguments[2] = "xml";
             var dataFormatGiven = arguments[2];
 
+            string pathToLogFile = @"log.txt";
 
             if (!File.Exists(pathToCsvGiven))
             {
@@ -37,7 +39,9 @@ namespace tut2
 
             //Reading from file
             var fileInfo = new FileInfo(pathToCsvGiven);
-            
+
+            var listOfStudents = new HashSet<Student>(new CustomComparer());
+
 
             using (var streamReader = new StreamReader(fileInfo.OpenRead()))
             {
@@ -45,34 +49,38 @@ namespace tut2
                 while ((line = streamReader.ReadLine()) != null)
                 {
                     string[] columns = line.Split(',');
-                    Console.WriteLine(line);
+                    if (columns.Length == 9)
+                    {
+                        var student = new Student
+                        {
+                            fname = columns[0],
+                            lname = columns[1],
+                            StudiesName = columns[2],
+                            StudiesMode = columns[3],
+                            IndexNumber = columns[4],
+                            birthdate = DateTime.Parse(columns[5]),
+                            email = columns[6],
+                            mothersName = columns[7],
+                            fathersName = columns[8]
+                        };
+
+                        if (!listOfStudents.Add(student))
+                        {
+                            string content = "Found duplicate of or null argument " + line;
+                            File.AppendAllText(pathToLogFile, content + Environment.NewLine);
+                        }
+                        else
+                        {
+                            listOfStudents.Add(student);
+                        }
+                    }
+                    else
+                    {
+                        string content = "Missing arguments in " + line;
+                        File.AppendAllText(pathToLogFile, content + Environment.NewLine);
+                    }
                 }
             }
-
-    
-            var listOfStudents = new HashSet<Student>(new CustomComparer());
-            var student = new Student
-            {
-                Email = "someEmail@Email.com",
-                IndexNumber = "s1234",
-                FirstName = "Jackob",
-                LastName = "Michalski"
-            };
-
-            var student2 = new Student
-            {
-                Email = "someEmail@Email.com",
-                IndexNumber = "s1234",
-                FirstName = "Jackob",
-                LastName = "Michalski"
-            };
-
-            listOfStudents.Add(student);
-            if (!listOfStudents.Add(student2))
-            {
-                Console.WriteLine("I found duplicate!" + student2);
-            }
-            listOfStudents.Add(student2);
 
             FileStream writer = new FileStream(@"result.xml", FileMode.Create);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(HashSet<Student>), new XmlRootAttribute("university"));

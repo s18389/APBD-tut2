@@ -10,12 +10,12 @@ namespace tut2
     {
         public bool Equals(Student x, Student y)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Equals($"{x.IndexNumber} {x.Email} {x.FirstName} {x.LastName}",$"{y.IndexNumber} {y.Email} {y.FirstName} {y.LastName}");
+            return StringComparer.InvariantCultureIgnoreCase.Equals($"{x.IndexNumber} {x.email} {x.fname} {x.lname}",$"{y.IndexNumber} {y.email} {y.fname} {y.lname}");
         }
 
         public int GetHashCode(Student obj)
         {
-            return StringComparer.CurrentCultureIgnoreCase.GetHashCode($"{obj.IndexNumber} {obj.Email} {obj.FirstName} {obj.LastName}");
+            return StringComparer.CurrentCultureIgnoreCase.GetHashCode($"{obj.IndexNumber} {obj.email} {obj.fname} {obj.lname}");
         }
     }
 }
