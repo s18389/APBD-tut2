@@ -6,14 +6,14 @@ using tut2.Models;
 
 namespace tut2
 {
-    public class CustomComparerStudiesName : IEqualityComparer<studies>
+    public class CustomComparerStudiesName : IEqualityComparer<StudiesList>
     {
-        public bool Equals(studies x, studies y)
+        public bool Equals(StudiesList x, StudiesList y)
         {
             return StringComparer.InvariantCultureIgnoreCase.Equals($"{x.name}",$"{y.name}");
         }
 
-        public int GetHashCode(studies obj)
+        public int GetHashCode(StudiesList obj)
         {
             return StringComparer.CurrentCultureIgnoreCase.GetHashCode($"{obj.name}");
         }

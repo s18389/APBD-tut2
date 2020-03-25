@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace tut2.Models
 {
     public class studies
     {
-        private string _studiesName;
-        private int _numberOfStudents;
-
-        public string name
-        {
-            get; set;
-        }
-        public int numberOfStudentys { set; get; }
-
+        public string name{ get; set; }
+        public string mode { set; get; }
     }
 }

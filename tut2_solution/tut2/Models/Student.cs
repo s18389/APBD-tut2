@@ -14,8 +14,7 @@ namespace tut2.Models
         private string _Email;
         private string _mothersName;
         private string _fathersName;
-        private string _studiesName;
-        private string _studiesMode;
+        private studies _studies;
 
       
         public string fname
@@ -60,16 +59,10 @@ namespace tut2.Models
             get { return _fathersName; }
             set { _fathersName = value ?? throw new ArgumentException(); }
         }
-        public string StudiesName
+       public studies studies
         {
-            get { return _studiesName; }
-            set { _studiesName = value ?? throw new ArgumentException(); }
-        }
-
-        public string StudiesMode
-        {
-            get { return _studiesMode; }
-            set { _studiesMode = value ?? throw new ArgumentException(); }
+            get { return _studies; }
+            set { _studies = value ?? throw new ArgumentException(); }
         }
     }
 }

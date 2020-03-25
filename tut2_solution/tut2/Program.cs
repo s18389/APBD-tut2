@@ -31,8 +31,7 @@ namespace tut2
             checkIfPathCorrect(pathDestinationGiven);
 
             var listOfStudents = new HashSet<Student>(new CustomComparer());
-            var listOfStudiesName = new HashSet<studies>(new CustomComparerStudiesName()); //list of studies with diffrent names 
-                                                                                            //(the same are not added due to use of comparator)
+            var listOfStudies = new HashSet<StudiesList>(new CustomComparerStudiesName()); //list of studies with diffrent names 
 
             try
             {
@@ -45,12 +44,16 @@ namespace tut2
                         string[] columns = line.Split(',');
                         if (columns.Length == 9)
                         {
+                            var studies = new studies
+                            {
+                                name = columns[2],
+                                mode = columns[3]
+                            };
                             var student = new Student
                             {
                                 fname = columns[0],
                                 lname = columns[1],
-                                StudiesName = columns[2],
-                                StudiesMode = columns[3],
+                                studies = studies,
                                 IndexNumber = columns[4],
                                 birthdate = DateTime.Parse(columns[5]),
                                 email = columns[6],
@@ -58,7 +61,7 @@ namespace tut2
                                 fathersName = columns[8]
                             };
 
-                            var studiesName = new studies
+                            var studiesName = new StudiesList
                             {
                                 name = columns[2]
                             };
@@ -71,7 +74,7 @@ namespace tut2
                             else
                             {
                                 listOfStudents.Add(student);
-                                listOfStudiesName.Add(studiesName);
+                                listOfStudies.Add(studiesName);
                             }
                         }
                         else
@@ -82,14 +85,20 @@ namespace tut2
                     }
                 }
 
+                countNumberOfStudents(listOfStudents, listOfStudies);
+                var university = new University()
+                {
+                    students = listOfStudents,
+                    activeStudies = listOfStudies,
+                    createdAt = DateTime.Now.ToString("dd/MM/yyyy"),
+                    author = "Jakub Michalski"
+                };
+
                 using (FileStream fileStream = File.Open("result.xml", FileMode.Create))
                 {
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(HashSet<Student>), new XmlRootAttribute("university"));
-                    xmlSerializer.Serialize(fileStream, listOfStudents);
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(University));
+                    xmlSerializer.Serialize(fileStream, university);
                 }
-
-                //Here I had problem how should I "attach" content of this function to the result.xml file as a part of 'university' attribute?
-                getAllStudiesNamesWithStudentsNumbers(listOfStudents, listOfStudiesName);
 
             }
             catch(FileNotFoundException e)
@@ -117,32 +126,20 @@ namespace tut2
             }
         }
 
-        public static void getAllStudiesNamesWithStudentsNumbers(HashSet<Student> listOfStudents, HashSet<studies> listOfStudiesName)
+        public static void countNumberOfStudents(HashSet<Student> listOfStudents, HashSet<StudiesList> listOfStudiesName)
         {
-            XmlDocument doc = new XmlDocument();
-            XmlElement activeStudies = doc.CreateElement("activeStudies");
-            foreach (studies element in listOfStudiesName)
+            foreach (StudiesList studiesList in listOfStudiesName)
             {
                 int studiesCount = 0;
                 foreach (Student student in listOfStudents)
                 {
-                    if (student.StudiesName.Equals(element.name)) studiesCount++;
+                    if (student.studies.name.Equals(studiesList.name))
+                    {
+                        studiesCount++;
+                        studiesList.numberOfStudents = studiesCount;
+                    }
                 }
-                XmlElement studies = doc.CreateElement("studies");
-                studies.SetAttribute("name", element.name);
-                studies.SetAttribute("numberOfStudents", studiesCount.ToString());
-                activeStudies.AppendChild(studies);
-                doc.AppendChild(activeStudies);
             }
-            doc.Save("numbersOfStudies.xml");
-
-            using (Stream input = File.OpenRead("numbersOfStudies.xml"))
-            using (Stream output = new FileStream("result.xml", FileMode.Append,
-                                                  FileAccess.Write, FileShare.None))
-            {
-                input.CopyTo(output);
-            }
-            File.Delete("numbersOfStudies.xml");
         }
 
     }
