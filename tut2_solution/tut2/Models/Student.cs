@@ -60,7 +60,6 @@ namespace tut2.Models
             get { return _fathersName; }
             set { _fathersName = value ?? throw new ArgumentException(); }
         }
-
         public string StudiesName
         {
             get { return _studiesName; }

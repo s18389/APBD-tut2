@@ -7,18 +7,13 @@ namespace tut2.Models
     public class studies
     {
         private string _studiesName;
-        private string _studiesMode;
+        private int _numberOfStudents;
 
         public string name
         {
-            get { return _studiesName; }
-            set { _studiesName = value ?? throw new ArgumentException(); }
+            get; set;
         }
+        public int numberOfStudentys { set; get; }
 
-        public string mode
-        {
-            get { return _studiesMode; }
-            set { _studiesMode = value ?? throw new ArgumentException(); }
-        }
     }
 }
